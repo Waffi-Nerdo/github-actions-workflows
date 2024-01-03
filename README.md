@@ -4,7 +4,7 @@
 ```yaml
 Name: Node.js Workflow
 Description: null
-Inputs:
+\nInputs:
 Name: node_version
 Description: Node.js version
 Type: string
@@ -13,14 +13,14 @@ Name: working_directory
 Description: Working directory
 Type: string
 Default: .
-Outputs:
-Secrets:
+\nOutputs:
+\nSecrets:
 ```
 ### readme.yml
 ```yaml
 Name: Generate README
 Description: null
-Inputs:
-Outputs:
-Secrets:
+\nInputs:
+\nOutputs:
+\nSecrets:
 ```
