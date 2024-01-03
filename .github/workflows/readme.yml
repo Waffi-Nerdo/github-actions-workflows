@@ -27,25 +27,26 @@ jobs:
           for file in .github/workflows/*.yml; do
             echo "### $(basename $file)" >> README.md
             echo '```yaml' >> README.md
-
+      
             # Extracting and printing workflow name and description
             echo "Name: $(yq e '.name' $file)" >> README.md
             echo "Description: $(yq e '.on.workflow_call.inputs.description.default' $file)" >> README.md
             
             # Extracting inputs
             echo "Inputs:" >> README.md
-            yq e '.on.workflow_call.inputs.* | "Name: " + (. | path | .[-1]) + ", Description: " + .description + ", Type: " + .type + ", Default: " + .default' $file >> README.md
-
+            yq e '.on.workflow_call.inputs.* | "Name: " + (. | path | .[-1]) + "\nDescription: " + .description + "\nType: " + .type + "\nDefault: " + .default' $file >> README.md
+      
             # Extracting outputs
             echo "Outputs:" >> README.md
-            yq e '.outputs.* | "Name: " + (. | path | .[-1]) + ", Description: " + .description' $file >> README.md
-
+            yq e '.outputs.* | "Name: " + (. | path | .[-1]) + "\nDescription: " + .description' $file >> README.md
+      
             # Extracting secrets
             echo "Secrets:" >> README.md
-            yq e '.on.workflow_call.secrets.* | "Name: " + (. | path | .[-1]) + ", Description: " + .description' $file >> README.md
-
+            yq e '.on.workflow_call.secrets.* | "Name: " + (. | path | .[-1]) + "\nDescription: " + .description' $file >> README.md
+      
             echo '```' >> README.md
           done
+
 
       - name: Commit and Push
         run: |
