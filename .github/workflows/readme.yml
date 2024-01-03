@@ -17,6 +17,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install yq (YAML Processor)
+        run: sudo snap install yq
+
       - name: Generate README
         run: |
           echo "# Repository Workflows and Actions" > README.md
@@ -24,9 +27,16 @@ jobs:
           for file in .github/workflows/*.yml; do
             echo "### $(basename $file)" >> README.md
             echo '```yaml' >> README.md
-            cat $file | grep 'inputs\|outputs' >> README.md
+
+            # Extracting and printing workflow name, description, type, and default values
+            echo "Name: $(yq e '.name' $file)" >> README.md
+            echo "Description: $(yq e '.on.workflow_call.inputs.description.default' $file)" >> README.md
+            echo "Type: $(yq e '.on.workflow_call.inputs.type.default' $file)" >> README.md
+            echo "Default: $(yq e '.on.workflow_call.inputs.default' $file)" >> README.md
+
             echo '```' >> README.md
           done
+
           echo "## Composite Actions" >> README.md
           for dir in actions/*; do
             if [ -d "$dir" ]; then
@@ -34,7 +44,7 @@ jobs:
               for file in $dir/*.yml; do
                 echo "#### $(basename $file)" >> README.md
                 echo '```yaml' >> README.md
-                cat $file | grep 'inputs\|outputs' >> README.md
+                # Add similar yq commands for composite actions if needed
                 echo '```' >> README.md
               done
             fi
@@ -45,5 +55,5 @@ jobs:
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
           git add README.md
-          git commit -m "Updated README with detailed workflow and action list"
+          git commit -m "Updated README with workflow details"
           git push
