@@ -1,0 +1,35 @@
+name: Node.js Build and Test
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        type: string
+        default: '14'
+      working-directory:
+        type: string
+        default: '.'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: Build and Test
+    strategy:
+      matrix:
+        node-version: [${{ inputs.node_version }}]
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Run tests
+      run: npm test
+      working-directory: ${{ inputs.working-directory }}
