@@ -28,26 +28,23 @@ jobs:
             echo "### $(basename $file)" >> README.md
             echo '```yaml' >> README.md
 
-            # Extracting and printing workflow name, description, type, and default values
+            # Extracting and printing workflow name and description
             echo "Name: $(yq e '.name' $file)" >> README.md
             echo "Description: $(yq e '.on.workflow_call.inputs.description.default' $file)" >> README.md
-            echo "Type: $(yq e '.on.workflow_call.inputs.type.default' $file)" >> README.md
-            echo "Default: $(yq e '.on.workflow_call.inputs.default' $file)" >> README.md
+            
+            # Extracting inputs
+            echo "Inputs:" >> README.md
+            yq e '.on.workflow_call.inputs.* | "Name: " + (. | path | .[-1]) + ", Description: " + .description + ", Type: " + .type + ", Default: " + .default' $file >> README.md
+
+            # Extracting outputs
+            echo "Outputs:" >> README.md
+            yq e '.outputs.* | "Name: " + (. | path | .[-1]) + ", Description: " + .description' $file >> README.md
+
+            # Extracting secrets
+            echo "Secrets:" >> README.md
+            yq e '.on.workflow_call.secrets.* | "Name: " + (. | path | .[-1]) + ", Description: " + .description' $file >> README.md
 
             echo '```' >> README.md
-          done
-
-          echo "## Composite Actions" >> README.md
-          for dir in actions/*; do
-            if [ -d "$dir" ]; then
-              echo "### $(basename $dir)" >> README.md
-              for file in $dir/*.yml; do
-                echo "#### $(basename $file)" >> README.md
-                echo '```yaml' >> README.md
-                # Add similar yq commands for composite actions if needed
-                echo '```' >> README.md
-              done
-            fi
           done
 
       - name: Commit and Push
