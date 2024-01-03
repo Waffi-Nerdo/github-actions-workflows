@@ -1,0 +1,47 @@
+name: Generate README
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Generate README
+        run: |
+          echo "# Repository Workflows and Actions" > README.md
+          echo "## Workflows" >> README.md
+          for file in .github/workflows/*.yml; do
+            echo "### $(basename $file)" >> README.md
+            echo '```yaml' >> README.md
+            cat $file | grep 'inputs\|outputs' >> README.md
+            echo '```' >> README.md
+          done
+          echo "## Composite Actions" >> README.md
+          for dir in actions/*; do
+            if [ -d "$dir" ]; then
+              echo "### $(basename $dir)" >> README.md
+              for file in $dir/*.yml; do
+                echo "#### $(basename $file)" >> README.md
+                echo '```yaml' >> README.md
+                cat $file | grep 'inputs\|outputs' >> README.md
+                echo '```' >> README.md
+              done
+            fi
+          done
+
+      - name: Commit and Push
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+          git add README.md
+          git commit -m "Updated README with detailed workflow and action list"
+          git push
