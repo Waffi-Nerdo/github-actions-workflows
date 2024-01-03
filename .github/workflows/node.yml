@@ -1,13 +1,17 @@
-name: Node.js Build and Test
+name: Node.js Workflow
 
 on:
   workflow_call:
     inputs:
       node_version:
+        required: true
         type: string
+        description: 'Node.js version'
         default: '14'
-      working-directory:
+      working_directory:
+        required: false
         type: string
+        description: 'Working directory'
         default: '.'
 
 jobs:
@@ -18,18 +22,18 @@ jobs:
       matrix:
         node-version: [${{ inputs.node_version }}]
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: npm install
-      working-directory: ${{ inputs.working-directory }}
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ inputs.working_directory }}
 
-    - name: Run tests
-      run: npm test
-      working-directory: ${{ inputs.working-directory }}
+      - name: Run tests
+        run: npm test
+        working-directory: ${{ inputs.working_directory }}
