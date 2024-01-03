@@ -2,14 +2,16 @@
 ## Workflows
 ### node.yml
 ```yaml
-    inputs:
-        node-version: [${{ inputs.node_version }}]
-      working-directory: ${{ inputs.working-directory }}
-      working-directory: ${{ inputs.working-directory }}
+Name: 
+Description: 
+Type: 
+Default: 
 ```
 ### readme.yml
 ```yaml
-            cat $file | grep 'inputs\|outputs' >> README.md
-                cat $file | grep 'inputs\|outputs' >> README.md
+Name: Generate README
+Description: null
+Type: null
+Default: null
 ```
 ## Composite Actions
