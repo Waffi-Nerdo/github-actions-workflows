@@ -33,15 +33,15 @@ jobs:
             echo "Description: $(yq e '.on.workflow_call.inputs.description.default' $file)" >> README.md
             
             # Extracting inputs
-            echo "Inputs:" >> README.md
+            echo "\nInputs:" >> README.md
             yq e '.on.workflow_call.inputs.* | "Name: " + (. | path | .[-1]) + "\nDescription: " + .description + "\nType: " + .type + "\nDefault: " + .default' $file >> README.md
       
             # Extracting outputs
-            echo "Outputs:" >> README.md
+            echo "\nOutputs:" >> README.md
             yq e '.outputs.* | "Name: " + (. | path | .[-1]) + "\nDescription: " + .description' $file >> README.md
       
             # Extracting secrets
-            echo "Secrets:" >> README.md
+            echo "\nSecrets:" >> README.md
             yq e '.on.workflow_call.secrets.* | "Name: " + (. | path | .[-1]) + "\nDescription: " + .description' $file >> README.md
       
             echo '```' >> README.md
